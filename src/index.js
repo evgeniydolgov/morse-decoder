@@ -38,41 +38,31 @@ const MORSE_TABLE = {
 };
 
 function decode(expr) {
-    let word_morse = {};
-
-    for (key in MORSE_TABLE){
-        word_morse[MORSE_TABLE[key]] = key;
-    };
-    word_morse[' '] = ' ';
-    let answer = [];
-    let x = expr.split('');
-    console.log(x);
-    x.forEach(item => {
-        answer.push(word_morse[item])
-    })
-    console.log(answer);
-    let ibra = [];
-    answer.forEach(item => {
-        for (let i = 0; i < item.length; i++){
-            item[i] === '.'? ibra.push('10') : item[i] === '-'? ibra.push('11') : ibra.push('**********');
+    let arrOfNumber = expr.split(/(.{10})/).filter(function(f){return f !== ''});
+    let answerMorse = [];
+    arrOfNumber.forEach(item => {
+        let x = '';
+        for(let i=0; i<item.length; i += 2) {
+            let value = item[i] + item[i+1];
+            if (value === '00'){
+                continue
+            } else if (value === '**'){
+                i +=10;
+                x += ' ';
+            } else if (value === '10'){
+                x += '.';
+            }else {
+                x += '-';
+            }
+            
         }
-        ibra.push('!')
+        answerMorse.push(x);
     });
-
-    let z = ibra.join('').split('!');
-    z.forEach(item => {
-        if(item === ''){
-        z.pop()
-        }
+    let answerWord =[];
+    answerMorse.forEach(item => {
+        item === ' ' ? answerWord.push(' ') : answerWord.push(MORSE_TABLE[item]);
     });
-    console.log(z)
-    let y = [];
-    z.forEach(item => {
-        let b = ('0000000000' + item)
-        y.push(b.substr(b.length -10));
-        
-    });
-    return z.join('')
+    return answerWord.join('');
 }
 
 module.exports = {
